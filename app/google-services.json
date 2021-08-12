@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "319933494144",
-    "project_id": "chatsapp-256e0",
-    "storage_bucket": "chatsapp-256e0.appspot.com"
+    "project_number": "86993205109",
+    "project_id": "chatsapp-bee53",
+    "storage_bucket": "chatsapp-bee53.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:319933494144:android:95416a5705e1abe455c765",
+        "mobilesdk_app_id": "1:86993205109:android:6eacf1353c556bca7cc53c",
         "android_client_info": {
           "package_name": "com.mianasad.chatsapp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "319933494144-7r6vm4qv5j975s66qq2j9ptgjfl6jrai.apps.googleusercontent.com",
+          "client_id": "86993205109-p92lue31dg7qtv0d1hj758dtd99lhl80.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDncUXq0RIf1GAmV-Re7xDG2aZx5jHZUAQ"
+          "current_key": "AIzaSyDJIgr3IhS8YvcHGWx6pDsns7le0p3KkxI"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "319933494144-7r6vm4qv5j975s66qq2j9ptgjfl6jrai.apps.googleusercontent.com",
+              "client_id": "86993205109-p92lue31dg7qtv0d1hj758dtd99lhl80.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

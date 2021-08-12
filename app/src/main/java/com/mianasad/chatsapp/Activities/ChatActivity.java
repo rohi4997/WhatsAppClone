@@ -5,7 +5,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,7 +16,11 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -35,10 +41,19 @@ import com.mianasad.chatsapp.Models.Message;
 import com.mianasad.chatsapp.R;
 import com.mianasad.chatsapp.databinding.ActivityChatBinding;
 
+import org.jitsi.meet.sdk.JitsiMeet;
+import org.jitsi.meet.sdk.JitsiMeetConferenceOptions;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+
+import org.jitsi.meet.sdk.JitsiMeetActivity;
+
+
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -55,9 +70,11 @@ public class ChatActivity extends AppCompatActivity {
     ProgressDialog dialog;
     String senderUid;
     String receiverUid;
+    int mSize;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
 
         binding = ActivityChatBinding.inflate(getLayoutInflater());
@@ -122,6 +139,7 @@ public class ChatActivity extends AppCompatActivity {
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
         binding.recyclerView.setAdapter(adapter);
 
+
         database.getReference().child("chats")
                 .child(senderRoom)
                 .child("messages")
@@ -134,7 +152,7 @@ public class ChatActivity extends AppCompatActivity {
                             message.setMessageId(snapshot1.getKey());
                             messages.add(message);
                         }
-
+                        binding.recyclerView.scrollToPosition(messages.size()-1);
                         adapter.notifyDataSetChanged();
                     }
 
@@ -146,7 +164,8 @@ public class ChatActivity extends AppCompatActivity {
 
         binding.sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 String messageTxt = binding.messageBox.getText().toString();
 
                 Date date = new Date();
@@ -185,6 +204,7 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
+
         binding.attachment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -209,7 +229,7 @@ public class ChatActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                database.getReference().child("presence").child(senderUid).setValue("typing...");
+                database.getReference().child("presence").child(senderUid).setValue("typing.");
                 handler.removeCallbacksAndMessages(null);
                 handler.postDelayed(userStoppedTyping,1000);
             }
@@ -221,13 +241,32 @@ public class ChatActivity extends AppCompatActivity {
                 }
             };
         });
+        binding.recyclerView.scrollToPosition(messages.size()-1);
+       
 
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
 //        getSupportActionBar().setTitle(name);
-//
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
+
+
+        URL serverURL;
+        try {
+            serverURL = new URL("https://meet.jit.si");
+            JitsiMeetConferenceOptions defaultOptions =
+                    new JitsiMeetConferenceOptions.Builder()
+                            .setServerURL(serverURL)
+                            .setWelcomePageEnabled(false)
+                            .build();
+            JitsiMeet.setDefaultConferenceOptions(defaultOptions);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     @Override
@@ -315,13 +354,89 @@ public class ChatActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.chat_menu, menu);
-        return super.onCreateOptionsMenu(menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.chat_menu, menu);
+        return true;
     }
 
     @Override
     public boolean onSupportNavigateUp() {
         finish();
         return super.onSupportNavigateUp();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.videoCall:
+                //Toast.makeText(this,"Video call clicked",Toast.LENGTH_SHORT).show();
+                //Intent i = new Intent(this,SecondActivity.class);
+                //this.startActivity(i);
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Enter Code for your call");
+                EditText videoCallCode=new EditText(this);
+                LinearLayout.LayoutParams layoutParams =new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT);
+                videoCallCode.setLayoutParams(layoutParams);
+                builder.setView(videoCallCode);
+                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        String messageTxt = "VideoCall started. Click videocall button to join \n(Code for join:"+ videoCallCode.getText().toString() +")";
+
+                        Date date = new Date();
+                        Message message = new Message(messageTxt, senderUid, date.getTime());
+                        binding.messageBox.setText("");
+
+                        String randomKey = database.getReference().push().getKey();
+
+                        HashMap<String, Object> lastMsgObj = new HashMap<>();
+                        lastMsgObj.put("lastMsg", message.getMessage());
+                        lastMsgObj.put("lastMsgTime", date.getTime());
+
+                        database.getReference().child("chats").child(senderRoom).updateChildren(lastMsgObj);
+                        database.getReference().child("chats").child(receiverRoom).updateChildren(lastMsgObj);
+
+                        database.getReference().child("chats")
+                                .child(senderRoom)
+                                .child("messages")
+                                .child(randomKey)
+                                .setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                database.getReference().child("chats")
+                                        .child(receiverRoom)
+                                        .child("messages")
+                                        .child(randomKey)
+                                        .setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+
+                                    }
+                                });
+                            }
+                        });
+
+
+                        JitsiMeetConferenceOptions options = new JitsiMeetConferenceOptions.Builder()
+                                .setRoom(videoCallCode.getText().toString())
+                                .setWelcomePageEnabled(false)
+                                .build();
+                        JitsiMeetActivity.launch(ChatActivity.this, options);
+                    }
+                });
+                builder.show();
+               break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    void notification()
+    {
+
     }
 }

@@ -7,16 +7,16 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.github.pgreze.reactions.ReactionPopup;
-import com.github.pgreze.reactions.ReactionsConfig;
-import com.github.pgreze.reactions.ReactionsConfigBuilder;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
+import com.mianasad.chatsapp.Activities.ChatActivity;
 import com.mianasad.chatsapp.Models.Message;
 import com.mianasad.chatsapp.R;
 import com.mianasad.chatsapp.databinding.DeleteDialogBinding;
@@ -25,6 +25,8 @@ import com.mianasad.chatsapp.databinding.ItemSentBinding;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static android.widget.Toast.makeText;
 
 public class MessagesAdapter extends RecyclerView.Adapter {
 
@@ -70,7 +72,7 @@ public class MessagesAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Message message = messages.get(position);
 
-        int reactions[] = new int[]{
+       /* int reactions[] = new int[]{
                 R.drawable.ic_fb_like,
                 R.drawable.ic_fb_love,
                 R.drawable.ic_fb_laugh,
@@ -114,44 +116,19 @@ public class MessagesAdapter extends RecyclerView.Adapter {
 
             return true; // true is closing popup, false is requesting a new selection
         });
-
+*/
 
         if(holder.getClass() == SentViewHolder.class) {
             SentViewHolder viewHolder = (SentViewHolder)holder;
-
-            if(message.getMessage().equals("photo")) {
+            if(message.getMessage().equals("photo")){
                 viewHolder.binding.image.setVisibility(View.VISIBLE);
                 viewHolder.binding.message.setVisibility(View.GONE);
-                Glide.with(context)
-                        .load(message.getImageUrl())
+                Glide.with(context).load(message.getImageUrl())
                         .placeholder(R.drawable.placeholder)
                         .into(viewHolder.binding.image);
             }
-
             viewHolder.binding.message.setText(message.getMessage());
 
-            if(message.getFeeling() >= 0) {
-                viewHolder.binding.feeling.setImageResource(reactions[message.getFeeling()]);
-                viewHolder.binding.feeling.setVisibility(View.VISIBLE);
-            } else {
-                viewHolder.binding.feeling.setVisibility(View.GONE);
-            }
-
-            viewHolder.binding.message.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    popup.onTouch(v, event);
-                    return false;
-                }
-            });
-
-            viewHolder.binding.image.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    popup.onTouch(v, event);
-                    return false;
-                }
-            });
 
             viewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
@@ -166,7 +143,7 @@ public class MessagesAdapter extends RecyclerView.Adapter {
                     binding.everyone.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            message.setMessage("This message is removed.");
+                            /*message.setMessage("This message is removed.");
                             message.setFeeling(-1);
                             FirebaseDatabase.getInstance().getReference()
                                     .child("chats")
@@ -178,7 +155,8 @@ public class MessagesAdapter extends RecyclerView.Adapter {
                                     .child("chats")
                                     .child(receiverRoom)
                                     .child("messages")
-                                    .child(message.getMessageId()).setValue(message);
+                                    .child(message.getMessageId()).setValue(message);*/
+                            Toast.makeText(context,"Not allowed",Toast.LENGTH_SHORT).show();
                             dialog.dismiss();
                         }
                     });
@@ -209,39 +187,15 @@ public class MessagesAdapter extends RecyclerView.Adapter {
             });
         } else {
             ReceiverViewHolder viewHolder = (ReceiverViewHolder)holder;
-            if(message.getMessage().equals("photo")) {
+            if(message.getMessage().equals("photo")){
                 viewHolder.binding.image.setVisibility(View.VISIBLE);
                 viewHolder.binding.message.setVisibility(View.GONE);
-                Glide.with(context)
-                        .load(message.getImageUrl())
+                Glide.with(context).load(message.getImageUrl())
                         .placeholder(R.drawable.placeholder)
                         .into(viewHolder.binding.image);
             }
             viewHolder.binding.message.setText(message.getMessage());
 
-            if(message.getFeeling() >= 0) {
-                //message.setFeeling(reactions[message.getFeeling()]);
-                viewHolder.binding.feeling.setImageResource(reactions[message.getFeeling()]);
-                viewHolder.binding.feeling.setVisibility(View.VISIBLE);
-            } else {
-                viewHolder.binding.feeling.setVisibility(View.GONE);
-            }
-
-            viewHolder.binding.message.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    popup.onTouch(v, event);
-                    return false;
-                }
-            });
-
-            viewHolder.binding.image.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    popup.onTouch(v, event);
-                    return false;
-                }
-            });
 
             viewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override

@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/videoCall"
         android:icon="@drawable/ic_video"
         android:title="Video Call"
         app:showAsAction="always" />
@@ -10,6 +11,7 @@
         android:icon="@drawable/ic_call"
         android:title="Audio Call"
         app:showAsAction="always" />
+
     <item android:title="Profile" />
     <item android:title="Block" />
     <item android:title="Settings" />

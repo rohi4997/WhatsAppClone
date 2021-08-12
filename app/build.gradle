@@ -1,7 +1,9 @@
 plugins {
     id 'com.android.application'
 }
+
 apply plugin: 'com.google.gms.google-services'
+
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
@@ -12,7 +14,7 @@ android {
 
     defaultConfig {
         applicationId "com.mianasad.chatsapp"
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -43,7 +45,7 @@ dependencies {
 
     implementation 'com.github.mukeshsolanki:android-otpview-pinview:2.1.2'
 
-    implementation platform('com.google.firebase:firebase-bom:26.1.1')
+    implementation platform('com.google.firebase:firebase-bom:28.3.0')
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-auth'
     implementation 'com.google.firebase:firebase-database'
@@ -56,5 +58,7 @@ dependencies {
     implementation 'com.devlomi:circularstatusview:1.0.1'
     implementation 'com.github.OMARIHAMZA:StoryView:1.0.2-alpha'
     implementation 'com.github.sharish:ShimmerRecyclerView:v1.3'
+
+    implementation ('org.jitsi.react:jitsi-meet-sdk:2.+') { transitive = true }
 
 }

@@ -234,7 +234,8 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.group:
-                startActivity(new Intent(MainActivity.this, GroupChatActivity.class));
+                Toast.makeText(this, "Group clicked.", Toast.LENGTH_SHORT).show();
+                //startActivity(new Intent(MainActivity.this, GroupChatActivity.class));
                 break;
             case R.id.search:
                 Toast.makeText(this, "Search clicked.", Toast.LENGTH_SHORT).show();
