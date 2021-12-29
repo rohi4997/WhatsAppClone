@@ -8,12 +8,9 @@
         android:title="Search"
         app:showAsAction="always" />
     <item
-        android:id="@+id/group"
-        android:title="Groups" />
-    <item
         android:id="@+id/invite"
         android:title="Invite" />
     <item
-        android:id="@+id/settings"
-        android:title="Settings" />
+        android:id="@+id/profile_menu"
+        android:title="Profile" />
 </menu>

@@ -59,6 +59,6 @@ dependencies {
     implementation 'com.github.OMARIHAMZA:StoryView:1.0.2-alpha'
     implementation 'com.github.sharish:ShimmerRecyclerView:v1.3'
 
-    implementation ('org.jitsi.react:jitsi-meet-sdk:2.+') { transitive = true }
+    implementation ('org.jitsi.react:jitsi-meet-sdk:2.9.0') { transitive = true }
 
 }
